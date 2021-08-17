@@ -63,6 +63,20 @@ resource "aws_internet_gateway" "terraform_igw" {
 }
 
 #Create Custom Route Table
+resource "aws_route_table" "terraform_rt" {
+    vpc_id = aws_vpc.terraform_vpc.id
+    
+    route {
+        //associated subnet can reach everywhere
+        cidr_block = "0.0.0.0/0" 
+        //CRT uses this IGW to reach internet
+        gateway_id = aws_internet_gateway.terraform_igw.id
+    }
+    
+    tags = {
+        Name = var.rt_name
+    }
+}
 
 
 # launch an instance
@@ -70,6 +84,7 @@ resource "aws_instance" "app_instance" {
   ami           = var.app_ami_id
   instance_type = "t2.micro"
   associate_public_ip_address = true
+  vpc_security_group_ids = [aws_security_group.app_sg.id]
   tags = {
       Name = var.name
   }
