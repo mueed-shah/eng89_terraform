@@ -42,15 +42,15 @@ resource "aws_subnet" "prod-subnet-public-1" {
     }
 }
 
-resource "aws_subnet" "prod-subnet-private-1" {
-    vpc_id = aws_vpc.terraform_vpc_code_test.id
-    cidr_block = "10.214.2.0/24"
-    map_public_ip_on_launch = "false" //it makes this a public subnet
-    availability_zone = "eu-west-1a"
-    tags = {
-        Name = "eng89_mueed_tf_db"
-    }
-}
+# resource "aws_subnet" "prod-subnet-private-1" {
+#     vpc_id = aws_vpc.terraform_vpc_code_test.id
+#     cidr_block = "10.214.2.0/24"
+#     map_public_ip_on_launch = "false" //it makes this a public subnet
+#     availability_zone = "eu-west-1a"
+#     tags = {
+#         Name = "eng89_mueed_tf_db"
+#     }
+# }
 
 
 # Create Internet Gateway

@@ -34,7 +34,7 @@ Check and run main.tf
 - tags is the keyword to name the instance 
 
 
-```JSON
+```
 provider "aws" {
      region = "eu-west-1"
 

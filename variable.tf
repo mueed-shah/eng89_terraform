@@ -7,8 +7,6 @@ variable "AWS_KEY_NAME" {
 variable "aws_region" {
     default = "eu-west-1"
 }
-
-
 variable "name" {
   default="eng89_mueed_terraform_app"
 }
