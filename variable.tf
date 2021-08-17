@@ -8,22 +8,26 @@ variable "aws_region" {
     default = "eu-west-1"
 }
 variable "name" {
-  default="eng89_mueed_terraform_app"
+  default = "eng89_mueed_terraform_app"
+}
+
+variable "route_name" {
+  default = "eng89_mueed_terraform_route"
 }
 
 variable "app_ami_id" {
-  default="ami-0a6e6cb27b2ee4a95"
+  default = "ami-0a6e6cb27b2ee4a95"
 }
 
 variable "vpc_id" {
 
-  default = "vpc-0d51274b20bf95e9c"
+  default = "vpc-0023be647c06b130f5"
 }
 variable "vpc_name" {
   default = "eng89_mueed_terraform"
 }
 variable "cidr_block" {
-  default="10.214.0.0/16"
+  default = "10.214.0.0/16"
 }
 variable "igw_name" {
   default = "eng89_mueed_terraform_igw"

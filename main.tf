@@ -22,7 +22,7 @@ provider "aws" {
 }
 
 # Let's create a VPC  
-resource "aws_vpc" "terraform_vpc_code_test" {
+resource "aws_vpc" "terraform_vpc" {
   cidr_block       = var.cidr_block 
   #"10.214.0.0/16"
   instance_tenancy = "default"
@@ -33,7 +33,7 @@ resource "aws_vpc" "terraform_vpc_code_test" {
 } 
 
 resource "aws_subnet" "prod-subnet-public-1" {
-    vpc_id = aws_vpc.terraform_vpc_code_test.id
+    vpc_id = aws_vpc.terraform_vpc.id
     cidr_block = "10.214.1.0/24"
     map_public_ip_on_launch = "true" //it makes this a public subnet
     availability_zone = "eu-west-1a"
@@ -42,20 +42,10 @@ resource "aws_subnet" "prod-subnet-public-1" {
     }
 }
 
-# resource "aws_subnet" "prod-subnet-private-1" {
-#     vpc_id = aws_vpc.terraform_vpc_code_test.id
-#     cidr_block = "10.214.2.0/24"
-#     map_public_ip_on_launch = "false" //it makes this a public subnet
-#     availability_zone = "eu-west-1a"
-#     tags = {
-#         Name = "eng89_mueed_tf_db"
-#     }
-# }
-
 
 # Create Internet Gateway
 resource "aws_internet_gateway" "terraform_igw" {
-  vpc_id = aws_vpc.terraform_vpc_code_test.id
+  vpc_id = aws_vpc.terraform_vpc.id
   
   tags = {
     Name = var.igw_name
@@ -63,7 +53,7 @@ resource "aws_internet_gateway" "terraform_igw" {
 }
 
 #Create Custom Route Table
-resource "aws_route_table" "terraform_rt" {
+resource "aws_route_table" "terraform_route" {
     vpc_id = aws_vpc.terraform_vpc.id
     
     route {
@@ -74,8 +64,13 @@ resource "aws_route_table" "terraform_rt" {
     }
     
     tags = {
-        Name = var.rt_name
+        Name = var.route_name
     }
+}
+
+resource "aws_route_table_association" "prod-crta-public-subnet-1"{
+    subnet_id = aws_subnet.prod-subnet-public-1.id
+    route_table_id = aws_route_table.terraform_route.id
 }
 
 
@@ -84,6 +79,7 @@ resource "aws_instance" "app_instance" {
   ami           = var.app_ami_id
   instance_type = "t2.micro"
   associate_public_ip_address = true
+  subnet_id = aws_subnet.prod-subnet-public-1.id
   vpc_security_group_ids = [aws_security_group.app_sg.id]
   tags = {
       Name = var.name

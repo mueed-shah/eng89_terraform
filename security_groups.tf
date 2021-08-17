@@ -1,5 +1,5 @@
 resource "aws_security_group" "app_sg" {
-    vpc_id = aws_vpc.terraform_vpc_code_test.id
+    vpc_id = aws_vpc.terraform_vpc.id
     egress {
         from_port = 0
         to_port = 0
@@ -11,7 +11,7 @@ resource "aws_security_group" "app_sg" {
         to_port = 22
         protocol = "tcp"
         // Allow only me to SSH to app
-        cidr_blocks = ["86.2.40.6/32"]
+        cidr_blocks = [var.my_ip]
     }
     //If you do not add this rule, you can not reach the NGIX  
     ingress {
