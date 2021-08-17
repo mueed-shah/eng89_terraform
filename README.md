@@ -5,6 +5,8 @@
 
 ![picture](vpc.png)
 
+![subnets](subnets.png)
+
 Create a new key pair in your local .ssh folder
 Run: `ssh-keygen -t rsa -b 2048 -v -f eng89_your_name`
 
