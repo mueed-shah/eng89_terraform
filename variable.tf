@@ -38,6 +38,11 @@ variable "aws_key_name" {
   default = "eng89_mueed_terraform"
 }
 
+variable "nacl_app_name" {
+
+  default = "eng89_mueed_app_nacl"
+}
+
 variable "aws_key_path" {
 
   default = "~/.ssh/eng89_mueed_terraform"

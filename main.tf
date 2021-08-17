@@ -46,7 +46,6 @@ resource "aws_subnet" "prod-subnet-public-1" {
 # Create Internet Gateway
 resource "aws_internet_gateway" "terraform_igw" {
   vpc_id = aws_vpc.terraform_vpc.id
-  
   tags = {
     Name = var.igw_name
   }
@@ -55,7 +54,6 @@ resource "aws_internet_gateway" "terraform_igw" {
 #Create Custom Route Table
 resource "aws_route_table" "terraform_route" {
     vpc_id = aws_vpc.terraform_vpc.id
-    
     route {
         //associated subnet can reach everywhere
         cidr_block = "0.0.0.0/0" 
@@ -87,4 +85,18 @@ resource "aws_instance" "app_instance" {
    #The key_name to ssh into instance
   key_name = var.aws_key_name
   #aws_key_path = var.aws_key_path
+  provisioner "remote-exec" {
+    inline = [
+         "cd app",
+         "npm start"
+    ]
+  }
+
+  connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.aws_key_path)
+      host        = self.public_ip
+    }
 }
+

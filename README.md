@@ -54,7 +54,7 @@ tags = {
 
 }
 ```
-
+## MAIN
 ```
 provider "aws" {
   region = var.aws_region
@@ -117,6 +117,7 @@ resource "aws_instance" "app_instance" {
   #aws_key_path = var.aws_key_path
 }
 ```
+## VARIABLES
 ```
 # create variables for our research is main.tf to make use of DRY
 
@@ -159,5 +160,36 @@ variable "aws_key_name" {
 variable "aws_key_path" {
 
   default = "~/.ssh/eng89_mueed_terraform"
+}
+```
+## INSTANCE BLOCK
+```
+
+# launch an instance
+resource "aws_instance" "app_instance" {
+  ami           = var.app_ami_id
+  instance_type = "t2.micro"
+  associate_public_ip_address = true
+  subnet_id = aws_subnet.prod-subnet-public-1.id
+  vpc_security_group_ids = [aws_security_group.app_sg.id]
+  tags = {
+      Name = var.name
+  }
+   #The key_name to ssh into instance
+  key_name = var.aws_key_name
+  #aws_key_path = var.aws_key_path
+  provisioner "remote-exec" {
+    inline = [
+         "cd app",
+         "npm start"
+    ]
+  }
+
+  connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.aws_key_path)
+      host        = self.public_ip
+    }
 }
 ```
