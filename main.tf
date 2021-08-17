@@ -42,6 +42,16 @@ resource "aws_subnet" "prod-subnet-public-1" {
     }
 }
 
+resource "aws_subnet" "prod-subnet-private-1" {
+    vpc_id = aws_vpc.terraform_vpc.id
+    cidr_block = "10.214.2.0/24"
+    map_public_ip_on_launch = "true" //it makes this a public subnet
+    availability_zone = "eu-west-1a"
+    tags = {
+        Name = "eng89_mueed_tf_db"
+    }
+}
+
 
 # Create Internet Gateway
 resource "aws_internet_gateway" "terraform_igw" {
@@ -71,6 +81,11 @@ resource "aws_route_table_association" "prod-crta-public-subnet-1"{
     route_table_id = aws_route_table.terraform_route.id
 }
 
+resource "aws_route_table_association" "prod-crta-private-subnet-1"{
+    subnet_id = aws_subnet.prod-subnet-private-1.id
+    route_table_id = aws_route_table.terraform_route.id
+}
+
 
 # launch an instance
 resource "aws_instance" "app_instance" {
@@ -87,8 +102,7 @@ resource "aws_instance" "app_instance" {
   #aws_key_path = var.aws_key_path
   provisioner "remote-exec" {
     inline = [
-         "cd app",
-         "npm start"
+         "cd app"
     ]
   }
 
@@ -99,4 +113,33 @@ resource "aws_instance" "app_instance" {
       host        = self.public_ip
     }
 }
+
+# launch an instance
+resource "aws_instance" "db_instance" {
+  ami = "ami-0580ded6615abd4c3"
+  instance_type = "t2.micro"
+  associate_public_ip_address = true
+  subnet_id = aws_subnet.prod-subnet-private-1.id
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
+  tags = {
+      Name = "eng89_mueed_db_terraform"
+  }
+   #The key_name to ssh into instance
+  key_name = var.aws_key_name
+  #aws_key_path = var.aws_key_path
+    provisioner "remote-exec" {
+    inline = [
+         "ls",
+         "pwd"
+    ]
+  }
+
+  connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.aws_key_path)
+      host        = self.public_ip
+    }
+}
+
 
