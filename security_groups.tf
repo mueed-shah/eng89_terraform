@@ -10,10 +10,9 @@ resource "aws_security_group" "app_sg" {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        // Allow only me to SSH to app
         cidr_blocks = [var.my_ip]
     }
-    //If you do not add this rule, you can not reach the NGIX  
+    // Nginx
     ingress {
         from_port = 80
         to_port = 80
@@ -46,7 +45,6 @@ resource "aws_security_group" "db_sg" {
         // Allow only me to SSH to app
         cidr_blocks = [var.my_ip]
     }
-    //If you do not add this rule, you can not reach the NGIX  
     ingress {
         from_port = 1024
         to_port = 65535
